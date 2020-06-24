@@ -22,18 +22,20 @@ def classify_image(file):
     vr_service.set_default_headers({'x-watson-learning-opt-out': "true"})
     vr_service.set_disable_ssl_verification(True)
 
-    with open('./media/images/' + str(file), 'rb') as images_file:
-        try:
-            classes = vr_service.classify(
-                images_file=images_file,
-                threshold=0.0,
-                classifier_ids=['pol_classifier_894618330']).get_result()
-            print(json.dumps(classes, indent=2))
-        except WatsonApiException as ex:
-            print(f'Status code: {ex.code}')
-            print(f'Error message: {ex.message}')
-        except ApiException as ApiEx:
-            print(f'Status code: {ApiEx.code}')
-            print(f'Error message: {ApiEx.message}')
-
+    try:
+        with open('./media/images/' + str(file), 'rb') as images_file:
+            try:
+                classes = vr_service.classify(
+                    images_file=images_file,
+                    threshold=0.0,
+                    classifier_ids=['polc_660192415']).get_result()
+                print(json.dumps(classes, indent=2))
+            except WatsonApiException as ex:
+                print(f'Status code: {ex.code}')
+                print(f'Error message: {ex.message}')
+            except ApiException as ApiEx:
+                print(f'Status code: {ApiEx.code}')
+                print(f'Error message: {ApiEx.message}')
+    except FileNotFoundError:
+        print('File insertion wasn\'t successful. Please try with different name or file source')
     return classes

@@ -3,9 +3,9 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-
     # path('frontend/', include('urls')),
     path('posts/', views.MlcmpView.as_view(), name='posts_list'),
+    path('zip-posts/', views.BulkView.as_view()),
     re_path(r'f/', views.catchall),
     path('', views.mlcmp_list),
     path('<int:pk>/', views.mlcmp_detail),

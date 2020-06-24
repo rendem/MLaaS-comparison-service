@@ -29,7 +29,7 @@ SECRET_KEY = 'x_sy_nm7lq!#qlb8iyvpk*)-rw8asygppxfeh0rzjcadrez#%j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  # os.environ.get('DJANGO_ENV') == 'development'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'peaceful-parity-267412.appspot.com', 'dataon.dev', 'www.dataon.dev']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'your-domain.com', 'dataon.dev', 'www.dataon.dev']
 
 
 # Application definition
@@ -110,25 +110,14 @@ DATABASES = {
         # },
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            # 'HOST': '/cloudsql/peaceful-parity-267412:us-east1:mlcmp1',
-            'USER': 'mrende',
-            'PASSWORD': 'People85',
-            'NAME': 'mlcmp_1',
+            'USER': 'postgres',
+            'PASSWORD': '<your db password>',
+            'NAME': 'your-database-name',
             'PORT': '5432',
             },
     }
 
-#    DATABASES = {
-#        'default': {
-#            'ENGINE': 'django.db.backends.postgresql',
-#            'HOST': '127.0.0.1',
-#            'PORT': '5432',
-#            'NAME': 'mlcmp_1',
-#            'USER': 'mrende',
-#            'PASSWORD': 'People85*',
-#        },
-#    }
-DATABASES['default']['HOST'] = '/cloudsql/peaceful-parity-267412:us-east1:mlcmp1'
+DATABASES['default']['HOST'] = '/cloudsql/<your cloud database instance name>'
 if os.getenv('GAE_INSTANCE'):
     pass
 else:

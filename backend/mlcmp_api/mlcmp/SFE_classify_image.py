@@ -2,15 +2,21 @@ import sys
 from EinsteinVision.EinsteinVision import EinsteinVisionService
 import base64
 import os
+import json
 
-model_id = 'NR33W35JDNWG6OWX54D7GADG3I'
 FOLDER = os.path.dirname(os.path.abspath(__file__))
 pem_file = os.path.join(FOLDER, 'einstein_platform.pem')
+sfe_file = os.path.join(FOLDER, 'sfe_file.json')
+
+with open(sfe_file) as json_file:
+    data = json.load(json_file)
+    model_id = data['model_id']
+    user_email = data['user_email']
 
 
 def sf_classify_image(file):
 
-    evs = EinsteinVisionService(email='rendemehmetali@gmail.com', pem_file=pem_file)
+    evs = EinsteinVisionService(email=user_email, pem_file=pem_file)
 
     if evs.check_for_token() is None:
         evs.get_token()

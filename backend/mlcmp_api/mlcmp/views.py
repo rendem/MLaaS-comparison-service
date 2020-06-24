@@ -12,7 +12,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.parsers import MultiPartParser, FormParser
 from .SFE_classify_image import sf_classify_image
+from .SFE_classify_zip import sf_classify_zip
 from .IBM_classify_image import classify_image
+from .IBM_classify_zip import classify_zip
 from .serializers import MlcmpSerializer
 from .models import Mlcmp
 
@@ -81,6 +83,33 @@ def mlcmp_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class BulkView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        serializer = MlcmpSerializer(data=request.FILES)
+        print(request.FILES)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            print("mlcmp saved with zip.")
+            mlcmp = Mlcmp.objects.get(id=serializer.data['id'])
+            try:
+                mlcmp.result = str(classify_zip(serializer.validated_data.get('file'))) +\
+                               'SF RESULT : ' + str(sf_classify_zip(serializer.validated_data.get('file')))
+                mlcmp.save()
+                print('saved!')
+            except Exception as err:
+                print(f'Unexpected error occurred: {err}')
+
+            if mlcmp.result is not None or mlcmp.result != '':
+                return Response(json.dumps(mlcmp.result), status=status.HTTP_201_CREATED)
+            else:
+                mlcmp.delete()
+                return Response(json.dumps('Analysis did not succeed, please try with different data!'),
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
 class MlcmpView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
@@ -108,7 +137,12 @@ class MlcmpView(APIView):
             except Exception as err:
                 print(f'Unexpected error occurred: {err}')
 
-            return Response(json.dumps(mlcmp.result), status=status.HTTP_201_CREATED)
+            if mlcmp.result is not None or mlcmp.result != '':
+                return Response(json.dumps(mlcmp.result), status=status.HTTP_201_CREATED)
+            else:
+                mlcmp.delete()
+                return Response(json.dumps('Analysis did not succeed, please try with different data!'),
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             print('error', posts_serializer.errors)
             return Response(posts_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
