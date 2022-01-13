@@ -24,7 +24,7 @@ monotonic==1.5
 numpy==1.18.1
 pandas==1.0.1
 Pillow==7.0.0
-pipenv==2018.11.26
+pipenv==2022.1.8
 psycopg2==2.8.4
 pycparser==2.19
 PyJWT==1.7.1
